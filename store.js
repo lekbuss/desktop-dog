@@ -2,6 +2,7 @@ const { safeStorage } = require('electron');
 const Store = require('electron-store');
 
 const store = new Store({
+  deserialize: (value) => JSON.parse(value.replace(/^\uFEFF/, '')),
   defaults: {
     hunger: 100,
     water: 100,
