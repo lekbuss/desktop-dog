@@ -51,6 +51,7 @@
   function updateStat(key, value) {
     stats[key] = clamp(value, 0, 100);
     window.dogAPI.setState(key, stats[key]);
+    if (statusVisible) updateStatusPanel();
   }
 
   function checkSadState() {
@@ -178,14 +179,14 @@
         enterState('eat');
         updateStat('hunger', stats.hunger + 30);
         updateStat('mood',   stats.mood   + 5);
-        setTimeout(() => { enterState('idle'); scheduleNextAction(); }, 2000);
+        setTimeout(() => { checkSadState(); if (currentState !== 'sad') { enterState('idle'); scheduleNextAction(); } }, 2000);
         break;
       }
       case 'water': {
         stopWalk();
         enterState('drink');
         updateStat('water', stats.water + 30);
-        setTimeout(() => { enterState('idle'); scheduleNextAction(); }, 2000);
+        setTimeout(() => { checkSadState(); if (currentState !== 'sad') { enterState('idle'); scheduleNextAction(); } }, 2000);
         break;
       }
       case 'walk': {

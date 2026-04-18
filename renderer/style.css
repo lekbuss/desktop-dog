@@ -5,10 +5,10 @@
 }
 
 html, body {
-  width: 160px;
-  height: 160px;
+  width: 100vw;
+  height: 100vh;
   background: transparent;
-  overflow: visible;
+  overflow: hidden;
   -webkit-app-region: drag;
   user-select: none;
   pointer-events: none;   /* 透明区域穿透，只有标记 all 的元素接受事件 */
