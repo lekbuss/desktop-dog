@@ -1,0 +1,331 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 160px;
+  height: 160px;
+  background: transparent;
+  overflow: visible;
+  -webkit-app-region: drag;
+  user-select: none;
+  pointer-events: none;   /* 透明区域穿透，只有标记 all 的元素接受事件 */
+}
+
+/* ── 状态面板 ── */
+.status-panel {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 156px;
+  background: rgba(255, 252, 240, 0.96);
+  border: 1.5px solid #d4a06a;
+  border-radius: 12px;
+  padding: 8px 10px 6px;
+  pointer-events: all;
+  -webkit-app-region: no-drag;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.18));
+  z-index: 50;
+}
+
+.status-panel.hidden { display: none; }
+
+.status-title {
+  font-size: 11px;
+  font-family: 'Microsoft YaHei', '微软雅黑', sans-serif;
+  font-weight: 600;
+  color: #8B4513;
+  text-align: center;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 4px;
+}
+
+.stat-icon {
+  font-size: 11px;
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.stat-track {
+  flex: 1;
+  height: 7px;
+  background: #ede0cc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.stat-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #e8a050, #c8915a);
+  transition: width 0.4s ease;
+  width: 100%;
+}
+
+/* 低值变红 */
+.stat-fill.low { background: linear-gradient(90deg, #e05050, #c03030); }
+
+.stat-num {
+  font-size: 10px;
+  font-family: monospace;
+  color: #7a5030;
+  width: 22px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ── 对话气泡 ── */
+.bubble {
+  pointer-events: all;
+  position: fixed;
+  bottom: 112px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fffef0;
+  border: 2px solid #8B4513;
+  border-radius: 14px;
+  padding: 7px 11px;
+  max-width: 200px;
+  min-width: 50px;
+  width: max-content;
+  font-size: 13px;
+  font-family: 'Microsoft YaHei', '微软雅黑', 'PingFang SC', sans-serif;
+  color: #3a2010;
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.5;
+  z-index: 999;
+  -webkit-app-region: no-drag;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
+  pointer-events: none;
+}
+
+.bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 11px solid #fffef0;
+}
+
+.bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-top: 14px solid #8B4513;
+  z-index: -1;
+}
+
+.bubble.hidden {
+  display: none;
+}
+
+.bubble.typing #bubble-text::after {
+  content: '|';
+  display: inline;
+  animation: blink 0.6s infinite;
+  color: #8B4513;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ── 狗狗容器 ── */
+#dog-wrapper {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 96px;
+  height: 96px;
+  -webkit-app-region: no-drag;
+  cursor: pointer;
+  pointer-events: all;   /* 只有狗狗区域接受鼠标事件 */
+}
+
+#dog-inner {
+  width: 96px;
+  height: 96px;
+  transform-origin: center bottom;
+}
+
+/* 朝向翻转 */
+#dog-wrapper.facing-left #dog-inner {
+  transform: scaleX(-1);
+}
+
+/* ── 动画关键帧 ── */
+@keyframes tail-wag {
+  0%,100% { transform: rotate(-15deg); }
+  50%      { transform: rotate(18deg); }
+}
+@keyframes tail-wag-fast {
+  0%,100% { transform: rotate(-20deg); }
+  50%      { transform: rotate(20deg); }
+}
+@keyframes body-bob {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+@keyframes body-walk {
+  0%,100% { transform: translateY(0) rotate(-1deg); }
+  50%      { transform: translateY(-2px) rotate(1deg); }
+}
+@keyframes body-run {
+  0%,100% { transform: translateY(0) scaleY(1); }
+  50%      { transform: translateY(-5px) scaleY(0.93); }
+}
+@keyframes body-bark {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  25%      { transform: translateY(-4px) rotate(-2deg); }
+  75%      { transform: translateY(1px) rotate(2deg); }
+}
+@keyframes leg-walk-a {
+  0%,100% { transform: rotate(18deg); }
+  50%      { transform: rotate(-18deg); }
+}
+@keyframes leg-walk-b {
+  0%,100% { transform: rotate(-18deg); }
+  50%      { transform: rotate(18deg); }
+}
+@keyframes leg-run-a {
+  0%,100% { transform: rotate(35deg); }
+  50%      { transform: rotate(-35deg); }
+}
+@keyframes leg-run-b {
+  0%,100% { transform: rotate(-35deg); }
+  50%      { transform: rotate(35deg); }
+}
+@keyframes ear-perk {
+  0%,100% { transform: rotate(0deg); }
+  50%      { transform: rotate(-10deg); }
+}
+@keyframes zzz-float {
+  0%   { opacity: 0; transform: translate(0,0) scale(0.5); }
+  40%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(8px,-14px) scale(1.1); }
+}
+@keyframes bark-text {
+  0%,100% { opacity: 0; transform: scale(0.7) translate(0,4px); }
+  30%,70% { opacity: 1; transform: scale(1) translate(0,0); }
+}
+
+/* ── idle ── */
+.state-idle #tail { animation: tail-wag 0.7s ease-in-out infinite; }
+.state-idle #body { animation: body-bob 2s ease-in-out infinite; }
+.state-idle #head { animation: body-bob 2s ease-in-out infinite; }
+
+/* ── walk ── */
+.state-walk #tail   { animation: tail-wag 0.45s ease-in-out infinite; }
+.state-walk #body   { animation: body-walk 0.45s ease-in-out infinite; }
+.state-walk #head   { animation: body-walk 0.45s ease-in-out infinite; }
+.state-walk #leg-fl { animation: leg-walk-a 0.45s ease-in-out infinite; transform-origin: 38px 56px; }
+.state-walk #leg-fr { animation: leg-walk-b 0.45s ease-in-out infinite; transform-origin: 58px 56px; }
+.state-walk #leg-bl { animation: leg-walk-b 0.45s ease-in-out infinite; transform-origin: 36px 76px; }
+.state-walk #leg-br { animation: leg-walk-a 0.45s ease-in-out infinite; transform-origin: 60px 76px; }
+
+/* ── run ── */
+.state-run #tail    { animation: tail-wag-fast 0.22s ease-in-out infinite; }
+.state-run #body    { animation: body-run 0.22s ease-in-out infinite; }
+.state-run #head    { animation: body-run 0.22s ease-in-out infinite; }
+.state-run #leg-fl  { animation: leg-run-a 0.22s ease-in-out infinite; transform-origin: 38px 56px; }
+.state-run #leg-fr  { animation: leg-run-b 0.22s ease-in-out infinite; transform-origin: 58px 56px; }
+.state-run #leg-bl  { animation: leg-run-b 0.22s ease-in-out infinite; transform-origin: 36px 76px; }
+.state-run #leg-br  { animation: leg-run-a 0.22s ease-in-out infinite; transform-origin: 60px 76px; }
+.state-run #ear-l   { animation: ear-perk 0.22s ease-in-out infinite; }
+.state-run #ear-r   { animation: ear-perk 0.22s ease-in-out infinite 0.11s; }
+.state-run #tongue  { visibility: visible; }
+.state-run #mouth-happy { visibility: hidden; }
+
+/* ── bark ── */
+.state-bark #tail      { animation: tail-wag-fast 0.28s ease-in-out infinite; }
+.state-bark #body      { animation: body-bark 0.28s ease-in-out infinite; }
+.state-bark #head      { animation: body-bark 0.28s ease-in-out infinite; }
+.state-bark #bark-text { visibility: visible; animation: bark-text 0.28s ease-in-out infinite; }
+.state-bark #tongue    { visibility: visible; }
+.state-bark #mouth-happy { visibility: hidden; }
+
+/* ── eat ── */
+.state-eat #tail    { animation: tail-wag-fast 0.35s ease-in-out infinite; }
+.state-eat #head    { animation: body-bob 0.35s ease-in-out infinite; }
+.state-eat #tongue  { visibility: visible; }
+.state-eat #mouth-happy { visibility: hidden; }
+
+/* ── drink ── */
+.state-drink #tail  { animation: tail-wag 0.5s ease-in-out infinite; }
+.state-drink #head  { animation: body-bob 0.4s ease-in-out infinite; }
+
+/* ── talk ── */
+.state-talk #tail   { animation: tail-wag-fast 0.35s ease-in-out infinite; }
+.state-talk #body   { animation: body-bob 0.6s ease-in-out infinite; }
+.state-talk #head   { animation: body-bob 0.6s ease-in-out infinite; }
+
+/* ── sleep ── */
+.state-sleep #eye-l        { visibility: hidden; }
+.state-sleep #eye-r        { visibility: hidden; }
+.state-sleep #eye-closed-l { visibility: visible; }
+.state-sleep #eye-closed-r { visibility: visible; }
+.state-sleep #mouth-happy  { visibility: hidden; }
+.state-sleep #zzz          { visibility: visible; }
+.state-sleep #z1           { animation: zzz-float 1.8s ease-in-out infinite; }
+.state-sleep #z2           { animation: zzz-float 1.8s ease-in-out infinite 0.6s; }
+.state-sleep #z3           { animation: zzz-float 1.8s ease-in-out infinite 1.2s; }
+
+/* ── pet（抚摸）── */
+@keyframes pet-head {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  30%      { transform: translateY(-4px) rotate(-5deg); }
+  60%      { transform: translateY(-2px) rotate(4deg); }
+}
+@keyframes pet-tail-happy {
+  0%,100% { transform: rotate(-25deg); }
+  50%      { transform: rotate(25deg); }
+}
+@keyframes squint {
+  0%,100% { transform: scaleY(1); }
+  50%      { transform: scaleY(0.3); }
+}
+@keyframes heart-float {
+  0%   { opacity: 0; transform: translate(0,0) scale(0.5); }
+  40%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(4px,-16px) scale(1.2); }
+}
+
+#pet-hearts             { visibility: hidden; }
+.state-pet #tail        { animation: pet-tail-happy 0.2s ease-in-out infinite; }
+.state-pet #head        { animation: pet-head 0.5s ease-in-out infinite; }
+.state-pet #eye-l       { animation: squint 0.5s ease-in-out infinite; transform-origin: 42px 45px; }
+.state-pet #eye-r       { animation: squint 0.5s ease-in-out infinite 0.1s; transform-origin: 54px 45px; }
+.state-pet #mouth-happy { visibility: visible; }
+.state-pet #pet-hearts  { visibility: visible; }
+.state-pet #heart1      { animation: heart-float 1s ease-in-out infinite; }
+.state-pet #heart2      { animation: heart-float 1s ease-in-out infinite 0.4s; }
+
+/* ── sad ── */
+.state-sad #tail           { animation: none; transform: rotate(-30deg); }
+.state-sad #mouth-happy    { visibility: hidden; }
+.state-sad #mouth-sad      { visibility: visible; }
+.state-sad #eye-l          { visibility: hidden; }
+.state-sad #eye-r          { visibility: hidden; }
+.state-sad #eye-closed-l   { visibility: visible; }
+.state-sad #eye-closed-r   { visibility: visible; }
+.state-sad                 { opacity: 0.85; }

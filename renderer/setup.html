@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>豆豆 - 初始设置</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #fdf6ec;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #3a2a1a;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      width: 380px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .dog-icon { font-size: 48px; margin-bottom: 12px; }
+    h1 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+    p  { font-size: 13px; color: #7a6a5a; margin-bottom: 20px; line-height: 1.7; }
+    input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #e0d0c0;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: #C8915A; }
+    button {
+      width: 100%;
+      padding: 11px;
+      background: #C8915A;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #b07840; }
+    .skip { font-size: 12px; color: #bbb; margin-top: 12px; cursor: pointer; }
+    .skip:hover { color: #888; }
+    a { color: #C8915A; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="dog-icon">🐕</div>
+    <h1>欢迎养一只豆豆！</h1>
+    <p>
+      豆豆需要 Anthropic API Key 才能开口说话。<br>
+      没有也没关系，其他功能照常使用。<br>
+      <a id="link" href="#">点击获取 API Key →</a>
+    </p>
+    <input type="password" id="api-key" placeholder="sk-ant-xxxxxxxx（可留空）" />
+    <button id="confirm">开始养豆豆！</button>
+    <div class="skip" id="skip">暂时跳过</div>
+  </div>
+  <script src="setup.js"></script>
+</body>
+</html>
