@@ -1,5 +1,5 @@
 # Desktop Dog
-
+[中文](./README.md) | [日本語](./README.ja.md)
 > 一只住在你桌面角落里的柴犬。
 
 ---
